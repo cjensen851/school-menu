@@ -1,1 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>School Menu</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #263c35;
+      color: #f5f1e8;
+      font-family: "Nunito", sans-serif;
+      padding: 28px 36px;
+    }
+
+    .board {
+      width: 100%;
+      min-height: calc(100vh - 56px);
+      border: 5px solid #b99b72;
+      padding: 22px 24px 28px;
+      position: relative;
+      box-shadow: inset 0 0 40px rgba(0,0,0,.28);
+    }
+
+    h1 {
+      font-family: "Patrick Hand", cursive;
+      font-size: clamp(42px, 5vw, 76px);
+      font-weight: 400;
+      text-align: center;
+      margin: 0 0 18px;
+      letter-spacing: 1px;
+    }
+
+    .week {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border-top: 2px solid rgba(245,241,232,.75);
+      border-bottom: 2px solid rgba(245,241,232,.75);
+    }
+
+    .day {
+      min-width: 0;
+      padding: 14px 16px 18px;
+      border-right: 1px solid rgba(245,241,232,.55);
+    }
+
+    .day:last-child {
+      border-right: none;
+    }
+
+    .today {
+      background: rgba(255,255,255,.06);
+      outline: 2px solid rgba(245,241,232,.65);
+      outline-offset: -5px;
+    }
+
+    .day-name {
+      font-family: "Patrick Hand", cursive;
+      text-align: center;
+      font-size: clamp(24px, 2.5vw, 38px);
+      letter-spacing: .5px;
+    }
+
+    .date {
+      text-align: center;
+      font-size: clamp(13px, 1.3vw, 18px);
+      opacity: .8;
+      margin-bottom: 14px;
+    }
+
+    .meal-title {
+      font-family: "Patrick Hand", cursive;
+      font-size: clamp(22px, 2vw, 30px);
+      margin-top: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(245,241,232,.45);
+    }
+
+    .meal {
+      font-size: clamp(13px, 1.25vw, 18px);
+      line-height: 1.45;
+      padding: 9px 0 14px;
+    }
+
+    .meal ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+
+    .meal li {
+      margin-bottom: 4px;
+    }
+
+    .no-school {
+      text-align: center;
+      font-family: "Patrick Hand", cursive;
+      font-size: clamp(20px, 2vw, 30px);
+      padding: 35px 5px;
+      opacity: .85;
+    }
+
+    .source-note {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12px;
+      opacity: .55;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 12px;
+      }
+
+      .board {
+        padding: 14px;
+      }
+
+      .week {
+        overflow-x: auto;
+      }
+
+      .day {
+        min-width: 180px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="board">
+    <h1>School Menu</h1>
+
+    <section class="week" id="week-menu">
+      <div class="day">
+        <div class="day-name">Monday</div>
+        <div class="date">Loading menu...</div>
+      </div>
+    </section>
+
+    <div class="source-note">
+      Elementary breakfast & lunch menu
+    </div>
+  </main>
+
+  <script>
+    /*
+      The automatic menu connection will go here.
+      The design is set up first so we can test the hosted page.
+    */
+  </script>
+
+</body>
+</html>
