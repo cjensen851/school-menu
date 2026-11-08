@@ -28,9 +28,8 @@
       width: 100%;
       min-height: calc(100vh - 56px);
       border: 5px solid #b99b72;
-      padding: 22px 24px 28px;
-      position: relative;
-      box-shadow: inset 0 0 40px rgba(0,0,0,.28);
+      padding: 20px 24px 22px;
+      box-shadow: inset 0 0 45px rgba(0, 0, 0, .28);
     }
 
     h1 {
@@ -38,21 +37,21 @@
       font-size: clamp(42px, 5vw, 76px);
       font-weight: 400;
       text-align: center;
-      margin: 0 0 18px;
+      margin: 0 0 16px;
       letter-spacing: 1px;
     }
 
     .week {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      border-top: 2px solid rgba(245,241,232,.75);
-      border-bottom: 2px solid rgba(245,241,232,.75);
+      border-top: 2px solid rgba(245, 241, 232, .75);
+      border-bottom: 2px solid rgba(245, 241, 232, .75);
     }
 
     .day {
       min-width: 0;
-      padding: 14px 16px 18px;
-      border-right: 1px solid rgba(245,241,232,.55);
+      padding: 12px 16px 18px;
+      border-right: 1px solid rgba(245, 241, 232, .55);
     }
 
     .day:last-child {
@@ -60,61 +59,59 @@
     }
 
     .today {
-      background: rgba(255,255,255,.06);
-      outline: 2px solid rgba(245,241,232,.65);
+      background: rgba(255, 255, 255, .06);
+      outline: 2px solid rgba(245, 241, 232, .65);
       outline-offset: -5px;
     }
 
     .day-name {
       font-family: "Patrick Hand", cursive;
       text-align: center;
-      font-size: clamp(24px, 2.5vw, 38px);
-      letter-spacing: .5px;
+      font-size: clamp(25px, 2.4vw, 38px);
     }
 
     .date {
       text-align: center;
-      font-size: clamp(13px, 1.3vw, 18px);
-      opacity: .8;
-      margin-bottom: 14px;
+      font-size: clamp(13px, 1.2vw, 17px);
+      opacity: .75;
+      margin-bottom: 10px;
     }
 
     .meal-title {
       font-family: "Patrick Hand", cursive;
-      font-size: clamp(22px, 2vw, 30px);
+      font-size: clamp(21px, 1.9vw, 29px);
       margin-top: 8px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid rgba(245,241,232,.45);
+      padding-bottom: 3px;
+      border-bottom: 1px solid rgba(245, 241, 232, .45);
     }
 
     .meal {
-      font-size: clamp(13px, 1.25vw, 18px);
-      line-height: 1.45;
-      padding: 9px 0 14px;
+      font-size: clamp(13px, 1.15vw, 17px);
+      line-height: 1.4;
+      padding: 8px 0 12px;
+      white-space: pre-line;
     }
 
-    .meal ul {
-      padding-left: 18px;
-      margin: 0;
-    }
-
-    .meal li {
-      margin-bottom: 4px;
+    .details {
+      font-size: clamp(11px, .95vw, 14px);
+      line-height: 1.35;
+      opacity: .72;
+      padding-top: 5px;
     }
 
     .no-school {
       text-align: center;
       font-family: "Patrick Hand", cursive;
-      font-size: clamp(20px, 2vw, 30px);
-      padding: 35px 5px;
+      font-size: clamp(22px, 2vw, 30px);
+      padding: 38px 5px;
       opacity: .85;
     }
 
     .source-note {
       text-align: center;
-      margin-top: 14px;
-      font-size: 12px;
-      opacity: .55;
+      margin-top: 10px;
+      font-size: 11px;
+      opacity: .5;
     }
 
     @media (max-width: 900px) {
@@ -144,8 +141,7 @@
 
     <section class="week" id="week-menu">
       <div class="day">
-        <div class="day-name">Monday</div>
-        <div class="date">Loading menu...</div>
+        <div class="day-name">Loading...</div>
       </div>
     </section>
 
@@ -155,10 +151,207 @@
   </main>
 
   <script>
-    /*
-      The automatic menu connection will go here.
-      The design is set up first so we can test the hosted page.
-    */
+    const menuContainer = document.getElementById("week-menu");
+
+    const breakfastDetails =
+      "Fresh fruit, juice, and a choice of milk";
+
+    const lunchDetails =
+      "Fresh fruits and vegetables, plus a choice of milk";
+
+    function getMonday(date) {
+      const result = new Date(date);
+      const day = result.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      result.setDate(result.getDate() + diff);
+      result.setHours(0, 0, 0, 0);
+      return result;
+    }
+
+    function cleanText(text) {
+      return text
+        .replace(/\r/g, "")
+        .replace(/[ \t]+\n/g, "\n")
+        .replace(/\n{2,}/g, "\n")
+        .trim();
+    }
+
+    function extractMenuByDay(text, year, monthIndex) {
+      const cleaned = cleanText(text);
+      const lines = cleaned.split("\n").map(line => line.trim());
+
+      const results = {};
+      let currentDay = null;
+      let buffer = [];
+
+      function saveDay() {
+        if (currentDay !== null) {
+          results[currentDay] = buffer
+            .filter(line => line.length > 0)
+            .join("\n")
+            .trim();
+        }
+      }
+
+      for (const line of lines) {
+        if (/^\d{1,2}$/.test(line)) {
+          const number = parseInt(line, 10);
+
+          if (number >= 1 && number <= 31) {
+            saveDay();
+            currentDay = number;
+            buffer = [];
+            continue;
+          }
+        }
+
+        if (currentDay !== null) {
+          // Stop reading once we reach the general information section.
+          if (
+            line.startsWith("Meal Prices") ||
+            line.startsWith("To manage your") ||
+            line.startsWith("Lunch includes") ||
+            line.startsWith("Menu subject") ||
+            line.startsWith("Menu is subject")
+          ) {
+            break;
+          }
+
+          buffer.push(line);
+        }
+      }
+
+      saveDay();
+
+      return results;
+    }
+
+    function formatMenu(text, mealType) {
+      if (!text) return "Menu not available";
+
+      if (/No School Today/i.test(text)) {
+        return null;
+      }
+
+      let lines = text
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean);
+
+      // Remove repetitive menu symbols and clean spacing.
+      lines = lines
+        .map(line => line.replace(/\s+/g, " "))
+        .filter(line =>
+          !line.includes("Variety of Cereal") ||
+          mealType === "breakfast"
+        );
+
+      // Keep the display from becoming overly crowded.
+      return lines.join("\n");
+    }
+
+    async function loadMenu() {
+      try {
+        const response = await fetch(
+          "menu-source.json?cache=" + Date.now()
+        );
+
+        if (!response.ok) {
+          throw new Error("Could not load menu data");
+        }
+
+        const data = await response.json();
+
+        const breakfastText = data.menus.breakfast.text;
+        const lunchText = data.menus.lunch.text;
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const monthIndex = today.getMonth();
+
+        const breakfastByDay = extractMenuByDay(
+          breakfastText,
+          year,
+          monthIndex
+        );
+
+        const lunchByDay = extractMenuByDay(
+          lunchText,
+          year,
+          monthIndex
+        );
+
+        const monday = getMonday(today);
+        menuContainer.innerHTML = "";
+
+        for (let i = 0; i < 5; i++) {
+          const date = new Date(monday);
+          date.setDate(monday.getDate() + i);
+
+          const dayNumber = date.getDate();
+          const isToday =
+            date.toDateString() === today.toDateString();
+
+          const dayName = date.toLocaleDateString(
+            "en-US",
+            { weekday: "long" }
+          );
+
+          const shortDate = date.toLocaleDateString(
+            "en-US",
+            { month: "short", day: "numeric" }
+          );
+
+          const breakfast = formatMenu(
+            breakfastByDay[dayNumber],
+            "breakfast"
+          );
+
+          const lunch = formatMenu(
+            lunchByDay[dayNumber],
+            "lunch"
+          );
+
+          const noSchool =
+            breakfast === null || lunch === null;
+
+          const day = document.createElement("article");
+          day.className = "day" + (isToday ? " today" : "");
+
+          if (noSchool) {
+            day.innerHTML = `
+              <div class="day-name">${dayName}</div>
+              <div class="date">${shortDate}</div>
+              <div class="no-school">No School</div>
+            `;
+          } else {
+            day.innerHTML = `
+              <div class="day-name">${dayName}</div>
+              <div class="date">${shortDate}</div>
+
+              <div class="meal-title">Breakfast</div>
+              <div class="meal">${breakfast}</div>
+              <div class="details">${breakfastDetails}</div>
+
+              <div class="meal-title">Lunch</div>
+              <div class="meal">${lunch}</div>
+              <div class="details">${lunchDetails}</div>
+            `;
+          }
+
+          menuContainer.appendChild(day);
+        }
+      } catch (error) {
+        console.error(error);
+        menuContainer.innerHTML = `
+          <div class="day">
+            <div class="day-name">Menu temporarily unavailable</div>
+          </div>
+        `;
+      }
+    }
+
+    loadMenu();
   </script>
 
 </body>
