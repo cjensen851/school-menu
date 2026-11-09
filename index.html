@@ -69,11 +69,12 @@
       line-height: 1.05;
     }
 
-   .date {
+  .date {
   text-align: center;
-  font-size: clamp(11px, 1.1vw, 15px);
-  opacity: 0.9;
-  margin-bottom: 7px;
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.95;
+  margin-bottom: 10px;
     }
 
     .meal-title {
@@ -87,13 +88,10 @@
     }
 
     .meal {
-  font-size: clamp(12px, 1.1vw, 16px);
+  font-size: 19px;
   line-height: 1.35;
-  padding: 4px 6px;
-  margin: 2px -6px 5px;
+  padding: 5px 0 10px;
   white-space: pre-line;
-  background: rgba(255, 255, 255, 0.10);
-  border-radius: 4px;
     }
 
     .details {
@@ -128,8 +126,12 @@
       }
 
       .day {
-        min-width: 155px;
-      }
+  min-width: 0;
+  padding: 8px 16px 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.10);
+  border-radius: 8px;
+    }
     }
   </style>
 </head>
